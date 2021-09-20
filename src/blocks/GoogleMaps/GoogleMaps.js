@@ -69,7 +69,7 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
         margin={properties.margin} // array
         debounced={properties.debounced} // bool Default: true
         layerTypes={properties.layerTypes} // string[] layerTypes={['TrafficLayer', 'TransitLayer']}
-        resetBoundsOnResize={properties.resetBoundsOnResize} // number Default: false, When true this will reset the map bounds if the parent resizes.
+        resetBoundsOnResize={properties.resetBoundsOnResize} // boolean Default: false, When true this will reset the map bounds if the parent resizes.
         heatmap={properties.heatmap} // To use the heatmap layer, add visualization to the libraries property array on bootstrapURLKeys and provide the data & configuration for the heatmap in heatmap as props. If you have multiple maps in your project and require a heatmap layer in at least one of them, provide libraries:['visualization'] to all of them.
         options={properties.mapOptions} // object custom map options
         yesIWantToUseGoogleMapApiInternals={true} // works with onGoogleApiLoaded
