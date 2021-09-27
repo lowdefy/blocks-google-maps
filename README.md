@@ -2,7 +2,7 @@
 
 This is a template repository as a basic starting point for developing custom blocks for Lowdefy. For a detailed description of how to build custom blocks, visit the [Custom Blocks](https://docs.lowdefy.com/custom-blocks) sections in the docs.
 
-This repository contains basic example of blocks for the five different block categories; `display`, `input`, `container`, `context` and `list`. You can read more about how blocks are used in Lowdefy in the [Blocks](https://docs.lowdefy.com/blocks) section of the docs.
+This repository contains basic example of blocks for the container block category: `container`. You can read more about how blocks are used in Lowdefy in the [Blocks](https://docs.lowdefy.com/blocks) section of the docs.
 
 A Lowdefy block has two files, the block meta data and the block React component.
 
@@ -10,19 +10,51 @@ A Lowdefy block has two files, the block meta data and the block React component
 
 1. You must have [node](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/getting-started/install) installed.
 2. Generate a repository from the template on Github or clone this repository.
-3. Run `yarn install`, then `yarn start`, then check the you block is served by viewing the meta data at: http://localhost:3002/meta/DisplayBlock.json.
+3. Run `yarn install`, then `yarn start`, then check the you block is served by viewing the meta data at: http://localhost:3002/meta/GoogleMaps.json.
 4. Add the `types` to you the lowdefy.yaml. For example:
 
 ```yaml
 name: my-app
-lowdefy: 3.10.1
+lowdefy: 3.21.2
 types:
-  DisplayBlock:
-    url: http://localhost:3002/meta/DisplayBlock.json
+  GoogleMaps:
+    url: http://localhost:3002/meta/GoogleMaps.json
 # ...
 ```
 
 5. Use your new block type in your Lowdefy app.
+
+```yaml
+- id: google_maps
+  type: GoogleMaps
+  properties:
+    bootstrapURLKeys:
+      key: ''
+      libraries: ['visualization']
+    mapOptions:
+      zoomControl: true
+      fullscreenControl: true
+      styles:
+        - stylers:
+            - saturation: -100
+            - gamma: 0.8
+            - lightness: 4
+            - visibility: on
+    zoom: 14
+    center:
+      lat: -25.344
+      lng: 131.036
+    style:
+      height: 550
+      width: 100%
+    markers:
+      - position:
+          lat: -25.344
+          lng: 131.036
+        label: Hi
+# ...
+```
+
 6. Start your Lowdefy app and test if it works, run: `npx lowdefy@latest dev`
 7. Continue to develop your block React component. Change to your block will need auto reload the app in the browser, you need to hit refresh.
 8. Before deploying your blocks to a static file server, remember to change the `remoteEntryUrl` field in the `webpack.prod.js` file to yout block URL.
