@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { blockDefaultProps } from '@lowdefy/block-tools';
 import GoogleMapReact, { fitBounds } from 'google-map-react';
 
-const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
+const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) => {
   let [mapState, setMap] = useState({});
   useEffect(() => {
     methods.registerMethod('addMarker', (marker) => {
@@ -63,6 +63,7 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
           ...properties.style,
         },
       ])}
+      loading={loading}
     >
       <GoogleMapReact
         bootstrapURLKeys={properties.bootstrapURLKeys} // { key: '', language: 'en', region: 'en', libraries: ['places'], ...otherUrlParams, } If you want to include additional libraries to load with the maps api, indicate them in the libraries property of the bootstrapURLKeys object.
