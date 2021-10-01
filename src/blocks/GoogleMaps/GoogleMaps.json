@@ -35,6 +35,10 @@
           "type": "object",
           "description": "To use the heatmap layer, add visualization to the libraries property array on bootstrapURLKeys and provide the data & configuration for the heatmap in heatmap as props. If you have multiple maps in your project and require a heatmap layer in at least one of them, provide libraries:['visualization'] to all of them."
         },
+        "height": {
+          "type": "object",
+          "description": "The height of the map block."
+        },
         "hoverDistance": {
           "type": "number",
           "description": "Defaults to 30. Map hover distance."
@@ -54,6 +58,10 @@
         "resetBoundsOnResize": {
           "type": "boolean",
           "description": "Default: false, When true this will reset the map bounds if the parent resizes."
+        },
+        "style": {
+          "type": "object",
+          "description": "Custom map css properties to apply to map block."
         },
         "zoom": {
           "type": "number",

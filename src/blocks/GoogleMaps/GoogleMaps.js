@@ -11,7 +11,7 @@ const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) 
         map: mapState.map,
       });
       marker.addListener('click', (event) =>
-        methods.triggerEvent({ name: 'onClickMarker', event })
+        methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps: mapState.maps } })
       );
       mapState.markers.push(marker);
     });
@@ -42,12 +42,12 @@ const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) 
           map: map,
         });
         marker.addListener('click', (event) =>
-          methods.triggerEvent({ name: 'onClickMarker', event })
+          methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps } })
         );
         return marker;
       }),
     });
-    methods.triggerEvent({ name: 'onGoogleApiLoaded' });
+    methods.triggerEvent({ name: 'onGoogleApiLoaded', event: { maps } });
   }
   return (
     // Important! Always set the container height explicitly
@@ -80,18 +80,27 @@ const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) 
         options={properties.mapOptions} // object custom map options
         yesIWantToUseGoogleMapApiInternals={true} // works with onGoogleApiLoaded
         onGoogleApiLoaded={_onGoogleApiLoaded} // Directly access the maps API see https://developers.google.com/maps/documentation/javascript/reference
-        onClick={(event) => methods.triggerEvent({ name: 'onClick', event })} // The event prop in args is the outer div onClick event, not the gmap-api 'click' event.
+        onClick={(event) =>
+          methods.triggerEvent({ name: 'onClick', event: { ...event, maps: mapState.maps } })
+        } // The event prop in args is the outer div onClick event, not the gmap-api 'click' event.
         onZoomAnimationStart={(zoom) =>
-          methods.triggerEvent({ name: 'onZoomAnimationStart', event: { zoom } })
+          methods.triggerEvent({
+            name: 'onZoomAnimationStart',
+            event: { zoom, maps: mapState.maps },
+          })
         }
         onZoomAnimationEnd={(zoom) =>
-          methods.triggerEvent({ name: 'onZoomAnimationEnd', event: { zoom } })
+          methods.triggerEvent({ name: 'onZoomAnimationEnd', event: { zoom, maps: mapState.maps } })
         }
-        onDrag={() => methods.triggerEvent({ name: 'onDrag' })}
-        onDragEnd={() => methods.triggerEvent({ name: 'onDragEnd' })} // When the map stops moving after the user drags. Takes into account drag inertia.
-        onTilesLoaded={() => methods.triggerEvent({ name: 'onTilesLoaded' })}
+        onDrag={() => methods.triggerEvent({ name: 'onDrag', event: { maps: mapState.maps } })}
+        onDragEnd={() =>
+          methods.triggerEvent({ name: 'onDragEnd', event: { maps: mapState.maps } })
+        } // When the map stops moving after the user drags. Takes into account drag inertia.
+        onTilesLoaded={() =>
+          methods.triggerEvent({ name: 'onTilesLoaded', event: { maps: mapState.maps } })
+        }
         onMapTypeIdChange={(type) =>
-          methods.triggerEvent({ name: 'onMapTypeIdChange', event: { type } })
+          methods.triggerEvent({ name: 'onMapTypeIdChange', event: { type, maps: mapState.maps } })
         } // When the user changes the map type (HYBRID, ROADMAP, SATELLITE, TERRAIN) this fires
       >
         {properties.content || (content.content && content.content())}
