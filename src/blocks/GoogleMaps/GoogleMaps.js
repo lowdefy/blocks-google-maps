@@ -55,8 +55,13 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
       id={blockId}
       data-testid={blockId}
       className={methods.makeCssClass([
-        { outline: 'none', cursor: events.onClick && 'pointer' },
-        properties.style,
+        {
+          outline: 'none',
+          cursor: events.onClick && 'pointer',
+          width: '100%',
+          height: properties.height || 500,
+          ...properties.style,
+        },
       ])}
     >
       <GoogleMapReact
