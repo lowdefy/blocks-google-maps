@@ -10,9 +10,14 @@ const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
         ...marker,
         map: mapState.map,
       });
-      marker.addListener('click', (event) =>
-        methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps: mapState.maps } })
-      );
+      if (marker.tooltip) {
+        marker.infoWindow = new mapState.maps.InfoWindow();
+        marker.infoWindow.setContent(marker.tooltip);
+      }
+      marker.addListener('click', (event) => {
+        if (marker.tooltip) marker.infoWindow.open(mapState.map, marker);
+        methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps: mapState.maps } });
+      });
       mapState.markers.push(marker);
     });
     methods.registerMethod('fitBounds', (bounds, mapSize) => {
@@ -41,9 +46,14 @@ const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
           ...marker,
           map: map,
         });
-        marker.addListener('click', (event) =>
-          methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps } })
-        );
+        if (marker.tooltip) {
+          marker.infoWindow = new maps.InfoWindow();
+          marker.infoWindow.setContent(marker.tooltip);
+        }
+        marker.addListener('click', (event) => {
+          if (marker.tooltip) marker.infoWindow.open(map, marker);
+          methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps } });
+        });
         return marker;
       }),
     });

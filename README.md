@@ -147,7 +147,7 @@ types:
 
 ## Examples
 
-1. Add a list of markers
+1. Add a list of markers, one with a tooltip
 
    ```yaml
    - id: google_maps
@@ -169,6 +169,7 @@ types:
              lat: -25.344
              lng: 131.036
            label: One
+           tooltip: '<div style="color:blue">Hello World!</div>'
          - position:
              lat: -25.348
              lng: 131.038
