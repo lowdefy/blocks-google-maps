@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { blockDefaultProps } from '@lowdefy/block-tools';
 import GoogleMapReact, { fitBounds } from 'google-map-react';
 
-const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) => {
+const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
   let [mapState, setMap] = useState({});
   useEffect(() => {
     methods.registerMethod('addMarker', (marker) => {
@@ -102,9 +102,7 @@ const GoogleMaps = ({ blockId, content, events, methods, properties, loading }) 
         onMapTypeIdChange={(type) =>
           methods.triggerEvent({ name: 'onMapTypeIdChange', event: { type, maps: mapState.maps } })
         } // When the user changes the map type (HYBRID, ROADMAP, SATELLITE, TERRAIN) this fires
-      >
-        {properties.content || (content.content && content.content())}
-      </GoogleMapReact>
+      />
     </div>
   );
 };

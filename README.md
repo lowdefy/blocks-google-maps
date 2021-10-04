@@ -2,7 +2,7 @@
 
 This repository is based on the blocks template repository as a basic starting point for developing custom blocks for Lowdefy. For a detailed description of how to build custom blocks, visit the [Custom Blocks](https://docs.lowdefy.com/custom-blocks) sections in the docs.
 
-This repository contains a basic example of blocks for the container block category: `container`. You can read more about how blocks are used in Lowdefy in the [Blocks](https://docs.lowdefy.com/blocks) section of the docs.
+This repository contains a basic example of blocks for the display block category: `display`. You can read more about how blocks are used in Lowdefy in the [Blocks](https://docs.lowdefy.com/blocks) section of the docs.
 
 A Lowdefy block has two files, the block meta data and the block React component.
 
@@ -148,6 +148,7 @@ types:
 ## Examples
 
 1. Add a list of markers
+
    ```yaml
    - id: google_maps
      type: GoogleMaps
@@ -173,7 +174,9 @@ types:
              lng: 131.038
            label: Two
    ```
+
 2. Add a marker
+
    ```yaml
    - id: google_maps
      type: GoogleMaps
@@ -183,19 +186,8 @@ types:
          libraries: ['visualization']
        mapOptions:
          panControl: true
-         mapTypeControl: true
-         scrollwheel: true
          zoomControl: true
-         scaleControl: true
-         streetViewControl: true
-         rotateControl: true
          fullscreenControl: true
-         styles:
-           - stylers:
-               - saturation: -100
-               - gamma: 0.8
-               - lightness: 4
-               - visibility: on
        zoom: 14
        center:
          lat: -25.344
@@ -215,7 +207,9 @@ types:
                      _event: lng
                  label: Hi
    ```
+
 3. Remove a marker
+
    ```yaml
    - id: google_maps
      type: GoogleMaps
@@ -250,7 +244,9 @@ types:
                    lng:
                      _state: latLng.lng
    ```
+
 4. Fit bounds
+
    ```yaml
    - id: google_maps
      type: GoogleMaps
@@ -282,6 +278,90 @@ types:
                    lng: -92.0217273125
                - width: 640 # Map width in pixels
                  height: 380 # Map height in pixels
+   ```
+
+5. Add a heatmap
+
+   ```yaml
+   - id: google_maps
+     type: GoogleMaps
+     properties:
+       bootstrapURLKeys:
+         key: ''
+         libraries: ['visualization']
+       mapOptions:
+         panControl: true
+         zoomControl: true
+         fullscreenControl: true
+       zoom: 10
+       center:
+         lat: 34.0522
+         lng: -118.2437
+       heatmap:
+         positions:
+           - lat: 34.091158
+             lng: -118.2795188
+             weight: 1
+           - lat: 34.0771192
+             lng: -118.2587199
+             weight: 2
+           - lat: 34.083527
+             lng: -118.370157
+             weight: 1
+           - lat: 34.0951843
+             lng: -118.283107
+             weight: 2
+           - lat: 34.1033401
+             lng: -118.2875469
+             weight: 4
+           - lat: 34.035798
+             lng: -118.251288
+             weight: 2
+           - lat: 34.0776068
+             lng: -118.2646526
+             weight: 3
+           - lat: 34.0919263
+             lng: -118.2820544
+             weight: 3
+           - lat: 34.0568525
+             lng: -118.3646369
+             weight: 3
+           - lat: 34.0285781
+             lng: -118.4115541
+             weight: 0
+           - lat: 34.017339
+             lng: -118.278469
+             weight: 0
+           - lat: 34.0764288
+             lng: -118.3661624
+             weight: 4
+           - lat: 33.9925942
+             lng: -118.4232475
+             weight: 4
+           - lat: 34.0764345
+             lng: -118.3730332
+             weight: 3
+           - lat: 34.093981
+             lng: -118.327638
+             weight: 0
+           - lat: 34.056385
+             lng: -118.2508724
+             weight: 1
+           - lat: 34.107701
+             lng: -118.2667943
+             weight: 4
+           - lat: 34.0450139
+             lng: -118.2388682
+             weight: 4
+           - lat: 34.1031997
+             lng: -118.2586152
+             weight: 1
+           - lat: 34.0828183
+             lng: -118.3241586
+             weight: 1
+         options:
+           radius: 20
+           opacity: 1
    ```
 
 ## Other Lowdefy Blocks Packages
