@@ -55,6 +55,10 @@
           "type": "array",
           "description": "Map margin."
         },
+        "markers": {
+          "type": "array",
+          "description": "A list of Markers with defined properties."
+        },
         "resetBoundsOnResize": {
           "type": "boolean",
           "description": "Default: false, When true this will reset the map bounds if the parent resizes."
