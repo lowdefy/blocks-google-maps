@@ -2,17 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { blockDefaultProps } from '@lowdefy/block-tools';
 import GoogleMapReact, { fitBounds } from 'google-map-react';
 
-const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
+const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
   let [mapState, setMap] = useState({});
   useEffect(() => {
+    methods.registerMethod('addHeatmap', (heatmap) => {
+      mapState.bounds = new mapState.maps.LatLngBounds();
+      for (let i = 0; i < heatmap.data.length; i++) {
+        heatmap.data[i].location = new mapState.maps.LatLng(heatmap.data[i].location.lat, heatmap.data[i].location.lng);
+        mapState.bounds.extend(heatmap.data[i].location);
+      }
+      mapState.heatmap = new mapState.maps.visualization.HeatmapLayer({
+        ...heatmap,
+        map: mapState.map,
+      });
+      mapState.map.fitBounds(mapState.bounds);
+    });
     methods.registerMethod('addMarker', (marker) => {
       marker = new mapState.maps.Marker({
         ...marker,
         map: mapState.map,
       });
-      marker.addListener('click', (event) =>
-        methods.triggerEvent({ name: 'onClickMarker', event })
-      );
+      if (marker.tooltip) {
+        marker.infoWindow = new mapState.maps.InfoWindow();
+        marker.infoWindow.setContent(marker.tooltip);
+      }
+      marker.addListener('click', (event) => {
+        if (marker.tooltip) marker.infoWindow.open(mapState.map, marker);
+        methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps: mapState.maps } });
+      });
       mapState.markers.push(marker);
     });
     methods.registerMethod('fitBounds', (bounds, mapSize) => {
@@ -30,6 +47,9 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
         }
       }
     });
+    methods.registerMethod('toggleHeatmap', () => {
+      mapState.heatmap.setMap(mapState.heatmap.getMap() ? null : mapState.map);
+    });
   });
   function _onGoogleApiLoaded({ map, maps }) {
     let markers = properties.markers || [];
@@ -41,13 +61,18 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
           ...marker,
           map: map,
         });
-        marker.addListener('click', (event) =>
-          methods.triggerEvent({ name: 'onClickMarker', event })
-        );
+        if (marker.tooltip) {
+          marker.infoWindow = new maps.InfoWindow();
+          marker.infoWindow.setContent(marker.tooltip);
+        }
+        marker.addListener('click', (event) => {
+          if (marker.tooltip) marker.infoWindow.open(map, marker);
+          methods.triggerEvent({ name: 'onClickMarker', event: { ...event, maps } });
+        });
         return marker;
       }),
     });
-    methods.triggerEvent({ name: 'onGoogleApiLoaded' });
+    methods.triggerEvent({ name: 'onGoogleApiLoaded', event: { maps } });
   }
   return (
     // Important! Always set the container height explicitly
@@ -55,8 +80,13 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
       id={blockId}
       data-testid={blockId}
       className={methods.makeCssClass([
-        { outline: 'none', cursor: events.onClick && 'pointer' },
-        properties.style,
+        {
+          outline: 'none',
+          cursor: events.onClick && 'pointer',
+          width: '100%',
+          height: properties.height || 500,
+          ...properties.style,
+        },
       ])}
     >
       <GoogleMapReact
@@ -74,22 +104,29 @@ const GoogleMaps = ({ blockId, content, events, methods, properties }) => {
         options={properties.mapOptions} // object custom map options
         yesIWantToUseGoogleMapApiInternals={true} // works with onGoogleApiLoaded
         onGoogleApiLoaded={_onGoogleApiLoaded} // Directly access the maps API see https://developers.google.com/maps/documentation/javascript/reference
-        onClick={(event) => methods.triggerEvent({ name: 'onClick', event })} // The event prop in args is the outer div onClick event, not the gmap-api 'click' event.
+        onClick={(event) =>
+          methods.triggerEvent({ name: 'onClick', event: { ...event, maps: mapState.maps } })
+        } // The event prop in args is the outer div onClick event, not the gmap-api 'click' event.
         onZoomAnimationStart={(zoom) =>
-          methods.triggerEvent({ name: 'onZoomAnimationStart', event: { zoom } })
+          methods.triggerEvent({
+            name: 'onZoomAnimationStart',
+            event: { zoom, maps: mapState.maps },
+          })
         }
         onZoomAnimationEnd={(zoom) =>
-          methods.triggerEvent({ name: 'onZoomAnimationEnd', event: { zoom } })
+          methods.triggerEvent({ name: 'onZoomAnimationEnd', event: { zoom, maps: mapState.maps } })
         }
-        onDrag={() => methods.triggerEvent({ name: 'onDrag' })}
-        onDragEnd={() => methods.triggerEvent({ name: 'onDragEnd' })} // When the map stops moving after the user drags. Takes into account drag inertia.
-        onTilesLoaded={() => methods.triggerEvent({ name: 'onTilesLoaded' })}
+        onDrag={() => methods.triggerEvent({ name: 'onDrag', event: { maps: mapState.maps } })}
+        onDragEnd={() =>
+          methods.triggerEvent({ name: 'onDragEnd', event: { maps: mapState.maps } })
+        } // When the map stops moving after the user drags. Takes into account drag inertia.
+        onTilesLoaded={() =>
+          methods.triggerEvent({ name: 'onTilesLoaded', event: { maps: mapState.maps } })
+        }
         onMapTypeIdChange={(type) =>
-          methods.triggerEvent({ name: 'onMapTypeIdChange', event: { type } })
+          methods.triggerEvent({ name: 'onMapTypeIdChange', event: { type, maps: mapState.maps } })
         } // When the user changes the map type (HYBRID, ROADMAP, SATELLITE, TERRAIN) this fires
-      >
-        {properties.content || (content.content && content.content())}
-      </GoogleMapReact>
+      />
     </div>
   );
 };
