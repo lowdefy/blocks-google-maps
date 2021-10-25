@@ -5,6 +5,18 @@ import GoogleMapReact, { fitBounds } from 'google-map-react';
 const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
   let [mapState, setMap] = useState({});
   useEffect(() => {
+    methods.registerMethod('addHeatmap', (heatmap) => {
+      mapState.bounds = new mapState.maps.LatLngBounds();
+      for (let i = 0; i < heatmap.data.length; i++) {
+        heatmap.data[i].location = new mapState.maps.LatLng(heatmap.data[i].location.lat, heatmap.data[i].location.lng);
+        mapState.bounds.extend(heatmap.data[i].location);
+      }
+      mapState.heatmap = new mapState.maps.visualization.HeatmapLayer({
+        ...heatmap,
+        map: mapState.map,
+      });
+      mapState.map.fitBounds(mapState.bounds);
+    });
     methods.registerMethod('addMarker', (marker) => {
       marker = new mapState.maps.Marker({
         ...marker,
@@ -34,6 +46,9 @@ const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
           mapState.markers[i].setMap(null);
         }
       }
+    });
+    methods.registerMethod('toggleHeatmap', () => {
+      mapState.heatmap.setMap(mapState.heatmap.getMap() ? null : mapState.map);
     });
   });
   function _onGoogleApiLoaded({ map, maps }) {
@@ -73,7 +88,6 @@ const GoogleMaps = ({ blockId, events, methods, properties, loading }) => {
           ...properties.style,
         },
       ])}
-      loading={loading}
     >
       <GoogleMapReact
         bootstrapURLKeys={properties.bootstrapURLKeys} // { key: '', language: 'en', region: 'en', libraries: ['places'], ...otherUrlParams, } If you want to include additional libraries to load with the maps api, indicate them in the libraries property of the bootstrapURLKeys object.

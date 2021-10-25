@@ -1,10 +1,8 @@
-# Lowdefy Blocks Template
+# Lowdefy Google Maps Block
 
-This repository is based on the blocks template repository as a basic starting point for developing custom blocks for Lowdefy. For a detailed description of how to build custom blocks, visit the [Custom Blocks](https://docs.lowdefy.com/custom-blocks) sections in the docs.
+The [Google Maps API](https://developers.google.com/maps/documentation/javascript/overview) is a feature rich javascript map API that lets you customize maps with your own content and imagery for display on web pages and mobile devices.
 
-This repository contains a basic example of blocks for the display block category: `display`. You can read more about how blocks are used in Lowdefy in the [Blocks](https://docs.lowdefy.com/blocks) section of the docs.
-
-A Lowdefy block has two files, the block meta data and the block React component.
+[google-map-react](https://github.com/google-map-react/google-map-react) is a component written over a small set of the [Google Maps API](https://developers.google.com/maps/).
 
 ## Running the blocks
 
@@ -93,7 +91,6 @@ types:
    - `maps`: has functions removed
    - `x`: position on map block
    - `y`: position on map block
-
 2. `onClickMarker` Trigger onClick actions when a marker is clicked, returns `_event` object:
 
    - `domEvent`: event object
@@ -101,39 +98,31 @@ types:
 
      - `lat`: latitudinal coordinate
      - `lng`: longitudinal coordinate
-
    - `maps`: has functions removed
    - `pixel`:
 
      - `x`
      - `y`
-
 3. `onDrag` Trigger onDrag actions when a map is dragged, returns `_event` object:
 
    - `maps`: has functions removed
-
 4. `onDragEnd` Trigger onDragEnd actions when a map is finished being dragged, returns `_event` object:
 
    - `maps`: has functions removed
-
 5. `onGoogleApiLoaded` Trigger onGoogleApiLoaded actions when the map api is loaded, returns `_event` object:
 
    - `maps`: has functions removed
-
 6. `onMapTypeIdChange` Trigger onMapTypeIdChange actions when the map type is changed, returns `_event` object:
 
    - `maps`: has functions removed
    - `type`: the map
-
 7. `onTilesLoaded` Trigger onTilesLoaded actions when the map tiles are loaded, returns `_event` object:
 
    - `maps`: has functions removed
-
 8. `onZoomAnimationStart` Trigger onZoomAnimationStart actions when the map is zoomed, returns `_event` object:
 
    - `maps`: has functions removed
    - `zoom`: map zoom level
-
 9. `onZoomAnimationEnd` Trigger onZoomAnimationEnd actions after the map is zoomed, returns `_event` object:
 
    - `maps`: has functions removed
@@ -141,13 +130,15 @@ types:
 
 ## Methods
 
-1. `addMarker` Accepts a single parameter object `marker` with properties.
+1. `addMarker` Accepts a single parameter object `marker` with marker properties.
 2. `removeMarker` Accepts a single parameter object `marker` with position property.
 3. `fitBounds` Accepts a two parameters, `bounds` and `mapSize`.
+4. `addHeatmap` Accepts a single parameter object `heatmap` with heatmap properties.
+5. `toggleHeatmap` Doesn't require any parameters.
 
 ## Examples
 
-1. Add a list of markers, one with a tooltip
+1. Add a list of markers, one with a tooltip:
 
    ```yaml
    - id: google_maps
@@ -175,8 +166,7 @@ types:
              lng: 131.038
            label: Two
    ```
-
-2. Add a marker
+2. Add a marker:
 
    ```yaml
    - id: google_maps
@@ -208,8 +198,7 @@ types:
                      _event: lng
                  label: Hi
    ```
-
-3. Remove a marker
+3. Remove a marker:
 
    ```yaml
    - id: google_maps
@@ -245,8 +234,7 @@ types:
                    lng:
                      _state: latLng.lng
    ```
-
-4. Fit bounds
+4. Fit bounds:
 
    ```yaml
    - id: google_maps
@@ -280,8 +268,7 @@ types:
                - width: 640 # Map width in pixels
                  height: 380 # Map height in pixels
    ```
-
-5. Add a heatmap
+5. Add a heatmap:
 
    ```yaml
    - id: google_maps
@@ -363,6 +350,72 @@ types:
          options:
            radius: 20
            opacity: 1
+   ```
+6. Add a heatmap after api has loaded:
+
+   ```yaml
+   - id: google_maps
+     type: GoogleMaps
+     properties:
+       bootstrapURLKeys:
+         key: ''
+         libraries: ['visualization']
+       mapOptions:
+         panControl: true
+         zoomControl: true
+         fullscreenControl: true
+       zoom: 10
+       center:
+         lat: 34.0522
+         lng: -118.2437
+     events:
+       onMountAsync:
+         - id: add_heatmap
+           type: CallMethod
+           params:
+             blockId: google_maps
+             method: addHeatmap
+             args:
+               - data:
+                   - location:
+                       lat: 34.091158
+                       lng: -118.2795188
+                     weight: 1
+                   - location:
+                       lat: 34.0771192
+                       lng: -118.2587199
+                     weight: 2
+                   - location:
+                       lat: 34.0828183
+                       lng: -118.3241586
+                     weight: 1
+                 radius: 20
+                 opacity: 1
+   ```
+7. Toggle a heatmap
+
+   ```yaml
+   - id: google_maps
+     type: GoogleMaps
+     properties:
+       bootstrapURLKeys:
+         key: ''
+         libraries: ['visualization']
+       mapOptions:
+         panControl: true
+         zoomControl: true
+         fullscreenControl: true
+       zoom: 10
+       center:
+         lat: 34.0522
+         lng: -118.2437
+     events:
+       onClick:
+         - id: toggle_heatmap
+           type: CallMethod
+           params:
+             blockId: google_maps
+             method: toggleHeatmap
    ```
 
 ## Other Lowdefy Blocks Packages
