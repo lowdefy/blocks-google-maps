@@ -2,7 +2,7 @@
   "name": "@lowdefy/blocks-google-maps",
   "version": "3.22.0",
   "license": "MIT",
-  "description": "google-map-react is a component written over a small set of the Google Maps API.",
+  "description": "A Lowdefy block using google-map-react to access the Google Maps API.",
   "homepage": "https://lowdefy.com",
   "keywords": [
     "lowdefy",
